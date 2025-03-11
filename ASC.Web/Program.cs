@@ -28,6 +28,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddOptions();
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -51,6 +54,7 @@ else
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
