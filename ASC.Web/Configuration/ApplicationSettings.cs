@@ -12,7 +12,7 @@
         public string EngineerPassword { get; set; }
 
         public string SMTPServer { get; set; }
-        public string SMTPPort { get; set; }
+        public int SMTPPort { get; set; }
         public string SMTPAccount { get; set; }
         public string SMTPPassword { get; set; }
     }
