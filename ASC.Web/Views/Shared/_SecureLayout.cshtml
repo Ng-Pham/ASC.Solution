@@ -33,7 +33,7 @@
                 <a href="#email"><span class="white-text email">@currentUser.Email</span></a>
             </div>
         </li>
-        @await Component.InvokeAsync("ASC.Web.Navigation.LeftNavigation", await navigationCache.GetNavigationMenuAsync())
+        @await Component.InvokeAsync("ASC.Web.Navigation.LeftNavigation", await navigationCache.GetNavigationCacheAsync())
     </ul>
 </header>
 <!-- Render Body -->

@@ -13,7 +13,7 @@ namespace ASC.Web.Data
         {
             _cache = cache;
         }
-        public async Task<NavigationMenu> GetNavigationMenuAsync()
+        public async Task<NavigationMenu> GetNavigationCacheAsync()
         {
             return JsonConvert.DeserializeObject<NavigationMenu>(await _cache.GetStringAsync(NavigationCacheName));
         }
