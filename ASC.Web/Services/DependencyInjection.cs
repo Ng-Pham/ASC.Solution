@@ -16,7 +16,24 @@ namespace ASC.Web.Services
 
             services.AddOptions();
             services.Configure<ApplicationSettings>(config.GetSection("AppSettings"));
-            
+
+
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection = config.GetSection("Authentication:Google");
+                options.ClientId = config["Google:Identity:ClientId"];
+                options.ClientSecret = config["Google:Identity:ClientSecret"];
+
+                options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+                {
+                    OnRedirectToAuthorizationEndpoint = context =>
+                    {
+                        context.Response.Redirect(context.RedirectUri + "&prompt=select_account");
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
             return services;
         }
 
