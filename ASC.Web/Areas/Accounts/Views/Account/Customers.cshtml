@@ -2,7 +2,7 @@
 @using System.Security.Claims;
 @model ASC.Web.Areas.Accounts.Models.CustomerViewModel
 @inject UserManager<IdentityUser> userManager;
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "_SecureLayout";
 }

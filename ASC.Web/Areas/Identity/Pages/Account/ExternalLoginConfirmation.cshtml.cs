@@ -36,7 +36,7 @@ namespace ASC.Web.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
         }
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        /*public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -73,7 +73,7 @@ namespace ASC.Web.Areas.Identity.Pages.Account
 
             ViewData["ReturnUrl"] = returnUrl;
             return Page();
-        }
+        }*/
 
 
     }

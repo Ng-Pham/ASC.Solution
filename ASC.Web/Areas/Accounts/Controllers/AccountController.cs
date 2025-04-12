@@ -152,7 +152,7 @@ namespace ASC.Web.Areas.Accounts.Controllers
                 var removeClaimResult = await _userManager.RemoveClaimAsync(user, new System.Security.Claims.Claim(isActiveClaim.Type, isActiveClaim.Value));
                 var addClaimResult = await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(isActiveClaim.Type, customers.Registration.IsActive.ToString()));
             }
-            if(customers.Registration.IsActive)
+            if (customers.Registration.IsActive)
             {
                 await _emailSender.SendEmailAsync(customers.Registration.Email, "Account Modified", $"Your account has been activated, Email: {customers.Registration.Email} ");
             }
@@ -160,8 +160,35 @@ namespace ASC.Web.Areas.Accounts.Controllers
             {
                 await _emailSender.SendEmailAsync(customers.Registration.Email, "Account Deactivated", $"Your account has been deactivated.");
             }
-            
+
             return RedirectToAction("Customers");
+        }
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var user = HttpContext.User.GetCurrentUserDetails();
+
+            return View(new ProfileModel() { UserName = user.Name });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileModel profile)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = await _userManager.FindByEmailAsync(HttpContext.User.GetCurrentUserDetails().Email);
+            user.UserName = profile.UserName;
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                result.Errors.ToList().ForEach(p => ModelState.AddModelError("", p.Description));
+                return View();
+            }
+            await _signInManager.RefreshSignInAsync(user);
+            return RedirectToAction("Dashboard", "Dashboard", new { area = "ServiceRequests" });
         }
     }
 }
