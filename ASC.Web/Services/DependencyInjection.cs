@@ -4,6 +4,7 @@ using ASC.Web.Configuration;
 using ASC.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ASC.Business.Interfaces;
 
 namespace ASC.Web.Services
 {
@@ -24,6 +25,9 @@ namespace ASC.Web.Services
                 options.ClientId = config["Google:Identity:ClientId"];
                 options.ClientSecret = config["Google:Identity:ClientSecret"];
             });
+
+            services.AddScoped<IMasterDataOperations, MasterDataOperations>();
+            services.AddAutoMapper(typeof(ApplicationDbContext));
 
             return services;
         }
