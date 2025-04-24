@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="ElCamino.AspNetCore.Identity.AzureTable" Version="9.0.1" />
     <PackageReference Include="MailKit" Version="4.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.20" />
@@ -27,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Accounts\Data\" />
+    <Folder Include="Areas\Configuration\Data\" />
     <Folder Include="Areas\ServiceRequests\Data\" />
     <Folder Include="Areas\ServiceRequests\Models\" />
   </ItemGroup>

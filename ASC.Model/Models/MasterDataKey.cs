@@ -15,7 +15,7 @@ namespace ASC.Model.Models
             this.RowKey = Guid.NewGuid().ToString();
             this.PartitionKey = key;
         }
-        public string IsActive { get; set; }
+        public bool IsActive { get; set; }
         public string Name { get; set; }
 
     }
