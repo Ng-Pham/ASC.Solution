@@ -1,4 +1,5 @@
-﻿using ASC.DataAccess.Interfaces;
+﻿using ASC.Business.Interfaces;
+using ASC.DataAccess.Interfaces;
 using ASC.Model.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASC.Business.Interfaces
+namespace ASC.Business
 {
     public class MasterDataOperations : IMasterDataOperations
     {
@@ -131,8 +132,9 @@ namespace ASC.Business.Interfaces
                         masterValue.IsDeleted = value.IsDeleted;
                         _unitOfWork.Repository<MasterDataValue>().Update(masterValue);
                     }
+                    _unitOfWork.CommitTransaction();
                 }
-                _unitOfWork.CommitTransaction();
+                
                 return true;
             }
         }
