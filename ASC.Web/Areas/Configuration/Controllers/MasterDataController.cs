@@ -5,6 +5,9 @@ using ASC.Web.Areas.Configuration.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Azure;
+using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace ASC.Web.Areas.Configuration.Controllers
 {
@@ -92,6 +95,50 @@ namespace ASC.Web.Areas.Configuration.Controllers
                 await _masterData.InsertMasterValueAsync(masterDataValue);
             }
             return Json(true);
+        }
+        private async Task<List<MasterDataValue>> ParseMasterDataExcel(IFormFile excelFile)
+        {
+            var masterValueList = new List<MasterDataValue>();
+            using (var memoryStream = new MemoryStream())
+            {
+                await excelFile.CopyToAsync(memoryStream);
+
+                using (ExcelPackage package = new ExcelPackage(memoryStream))
+                {
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    int rowCount = worksheet.Dimension.Rows;
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var masterDataValue = new MasterDataValue();
+                        masterDataValue.RowKey = Guid.NewGuid().ToString();
+                        masterDataValue.PartitionKey = worksheet.Cells[row, 1].Value.ToString();
+                        masterDataValue.Name = worksheet.Cells[row, 2].Value.ToString();
+                        masterDataValue.IsActive = Boolean.Parse(worksheet.Cells[row, 3].Value.ToString());
+                        masterValueList.Add(masterDataValue);
+                    }
+                }
+                
+            }
+            return masterValueList;
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadExcel()
+        {
+            var files = Request.Form.Files;
+            if (!files.Any())
+            {
+                return Json(new { Error = true, Text = "Upload a file" });
+            }
+            var excelFile = files.First();
+            if (excelFile.Length <= 0)
+            {
+                return Json(new { Error = true, Text = "Upload a file" });
+            }
+            var masterData = await ParseMasterDataExcel(excelFile);
+            var result = await _masterData.UploadBulkMasterData(masterData);
+            return Json(new { Success = result });
         }
         public IActionResult Index()
         {

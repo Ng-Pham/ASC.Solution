@@ -5,6 +5,7 @@ using ASC.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ASC.Business.Interfaces;
+using ASC.Business;
 
 namespace ASC.Web.Services
 {
@@ -24,6 +25,12 @@ namespace ASC.Web.Services
                 IConfigurationSection googleAuthNSection = config.GetSection("Authentication:Google");
                 options.ClientId = config["Google:Identity:ClientId"];
                 options.ClientSecret = config["Google:Identity:ClientSecret"];
+            });
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = config.GetSection("CacheSettings:CacheConnectionString").Value;
+                options.InstanceName = config.GetSection("CacheSettings:CacheInstance").Value;
             });
 
             services.AddScoped<IMasterDataOperations, MasterDataOperations>();
@@ -52,9 +59,15 @@ namespace ASC.Web.Services
             services.AddDistributedMemoryCache();
             services.AddSingleton<INavigationCacheOperations, NavigationCacheOperations>();
 
+            services.AddScoped<IMasterDataCacheOperations, MasterDataCacheOperations>();
+            services.AddScoped<IServiceRequestOperations, ServiceRequestOperations>();
+
             services.AddRazorPages();
             services.AddDatabaseDeveloperPageExceptionFilter(); 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddJsonOptions(options => { 
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
 
             return services;
         }
